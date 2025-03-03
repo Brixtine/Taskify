@@ -18,7 +18,7 @@
         </div>
     </div>
 
-    <div class="main">
+    <main>
         <div class="header-wrap">
             <h1>Taskify</h1>
             <p>A Simple Task Manager</p>
@@ -26,28 +26,25 @@
 
         <div class="addTask-wrap">
             <form class="task-form" id="taskForm">
-                <input type="text" class="new-task" id="newTask" placeholder="Type here..." required>
-                <button type="submit" class="addTaskBtn">Add Task</button>
+                <input type="text" class="new-task" id="newTask" placeholder=" Add new task here..." required autocomplete="off">
+                <button type="submit" class="btn" id="addTaskBtn">Add Task</button>
             </form>
+        </div>
 
         <div class="controls">
-            <button class="btn" id="sortAsc">Sort ↑</button>
-            <button class="btn" id="sortDesc">Sort ↓</button>
-            <button class="btn" id="resetSort">Reset</button>
-            <button class="btn btn-deleted" id="deleteSelected">Delete Selected</button>
-        
-        </div>
+            <button class="btn" id="sortAsc" type="button">Sort ↑</button>
+            <button class="btn" id="sortDesc" type="button">Sort ↓</button>
+            <button class="btn" id="resetSort" type="button">Reset</button>
+            <button class="btn btn-deleted" id="deleteSelected" type="button">Delete Selected</button>        
         </div>
         
-    <div class="status">
+        <div class="status">
             <div>Total Tasks: <span id="totalTasks">0</span></div>
             <div>Completed Tasks: <span id="completedTasks">0</span></div>
-        
-            <ul class="task-list" id="taskList"></ul>
         </div>
-        <button id="deleteSelected">[bin]</button>
-    </div>
 
-    <script src="script.js"></script>
+        <ul class="task-list" id="taskList"></ul>
+    </main>
+
 </body>
 </html>

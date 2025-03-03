@@ -27,17 +27,17 @@ ul li{
     width: 500px;
     height: 30px;
 }
-
-.addTaskBtn{
+#addTaskBtn{
     background-color: rgb(53, 133, 199);
     color: white;
     border: none;
     padding: 5px;
     border-radius: 5px;
+    cursor: pointer;
 }
 .task-input:focus{
     outline: none;
-    border-color: var;
+    border-color: var(--color);
 }
 .controls{
     display: flex;
@@ -67,7 +67,6 @@ ul li{
     border-top: 1px solid #ddd;
 }
 
-
 :root{
     --color: #9176FF;
     --dark-color: #2b2b2b;
@@ -82,6 +81,7 @@ ul li{
     box-sizing: border-box;
 }
 
+
 body {
     display: flex;
     justify-content: center;
@@ -93,8 +93,8 @@ body {
 
 .button{
     background-color: #fff;
-    width: 10em;
-    height: 5em;
+    width: 50px;
+    height: 30px;
     border-radius: 10em;
     padding: 0 0.3em;
 
@@ -112,8 +112,8 @@ body {
 
 .button__indicator{
     background-color: #fff;
-    width: 4em;
-    height: 4em;
+    width: 25px;
+    height: 25px;
     border-radius: 50%;
     position: absolute;
     box-shadow: 0 8px 40px rgba(0,0,0, .2);
@@ -130,7 +130,7 @@ body {
 
 .button__icon{
     color: var(--light-icon-color);
-    font-size: 2rem;
+    font-size: 14px;
 }
 
 .completed .task-text {
@@ -148,6 +148,7 @@ body {
     margin: 5px 0;
     display: flex;
     align-items: center;
+    cursor: grab;
 }
 
 .task-item .task-text {
@@ -158,7 +159,6 @@ body {
 input[type="checkbox"] {
     margin-right: 10px;
 }
-
 
 body.darkmode{
     background-color: #1a1a1a;
@@ -173,7 +173,7 @@ body.darkmode{
 }
 
 .darkmode .button__indicator{
-    transform: translateX(5.2em);
+    transform: translateX(1em);
     background-color: var(--dark-color);
     box-shadow: 0 8px 40px rgba(0,0,0, .3);
 }
@@ -191,3 +191,10 @@ body.darkmode{
         transform: rotate(360deg);
     }
 }
+/* joseph added: Drag-and-drop styles */
+.task-item.dragging {
+    opacity: 0.5;
+    background-color: lightgray;
+}
+
+

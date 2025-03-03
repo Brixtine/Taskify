@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function() {
     
         const li = document.createElement("li");
         li.classList.add("task-item");
+        li.draggable = true; // joseph added
     
         // Checkbox to mark as completed
         const checkBox = document.createElement("input");
@@ -31,10 +32,16 @@ document.addEventListener("DOMContentLoaded", function() {
         const span = document.createElement("span");
         span.classList.add("task-text");
         span.textContent = taskInput;
-        span.addEventListener("dblclick", () => editTaskText(li, span));
+        //span.addEventListener("dblclick", () => editTaskText(li, span));
+        taskList.addEventListener("dblclick", function (e) {
+            if (e.target.classList.contains("task-text")) {
+                editTaskText(e.target.closest(".task-item"), e.target);
+            }
+        });
+        
     
         const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "X";
+        deleteBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
         deleteBtn.addEventListener("click", () => removeTask(li));
     
         li.append(checkBox, span, deleteBtn);
@@ -44,7 +51,6 @@ document.addEventListener("DOMContentLoaded", function() {
         updateTaskApp();
     }
     
-    //need pa ni palitan/analyze since dai pa na-encounter dati
     function isDuplicate(taskInput){
         return Array.from(document.querySelectorAll(".task-text")).some(task => task.textContent.toLowerCase() === taskInput.toLowerCase());
     }
@@ -70,6 +76,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function saveEdit(li, span, input){
+        
         const newText = input.value.trim();
         if(!newText){
             window.alert("Task cannot be empty!");
@@ -77,6 +84,11 @@ document.addEventListener("DOMContentLoaded", function() {
             editTask = null;
             return;
         }
+        if (isDuplicate(newText)) { 
+            //window.alert("Task already exists!");
+            return;
+        }
+
         span.textContent = newText;
         li.replaceChild(span, input);
         editTask = null;
@@ -92,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function() {
             updateTaskApp();
         }
     }
-    
+
     deleteBtn.addEventListener("click", () => {
         const selectedTasks = document.querySelectorAll(".task-item input:checked");
         if(selectedTasks.length === 0) return;
@@ -102,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function() {
             updateTaskApp();
         }
     });
-    //need pa ni palitan/analyze since dai pa na-encounter dati
+
     function saveTasks(){
         const tasks = Array.from(document.querySelectorAll(".task-item")).map(task => ({
             text: task.querySelector(".task-text").textContent,
@@ -122,6 +134,40 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }
+
+    taskList.addEventListener("dragstart", (event) => {
+        event.target.classList.add("dragging");
+    });
+
+    taskList.addEventListener("dragend", (event) => {
+        event.target.classList.remove("dragging");
+        saveTasks(); 
+    });
+
+    taskList.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        const draggingItem = document.querySelector(".dragging");
+        const afterElement = getDragAfterElement(taskList, event.clientY);
+        if (afterElement == null) {
+            taskList.appendChild(draggingItem);
+        } else {
+            taskList.insertBefore(draggingItem, afterElement);
+        }
+    });
+
+    function getDragAfterElement(container, y) {
+        const draggableElements = [...container.querySelectorAll(".task-item:not(.dragging)")];
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
     taskForm.addEventListener("submit", (e) =>{
         e.preventDefault();
         addTask(newTaskInput.value);
@@ -130,6 +176,7 @@ document.addEventListener("DOMContentLoaded", function() {
     loadSavedTasks();
     updateTaskApp();
 });
+
 
 const body = document.querySelector('body');
 const button = document.querySelector('.button');
@@ -159,7 +206,7 @@ button.addEventListener('click', () => {
 
     store(body.classList.contains('darkmode'));
 
-    if(body.classList.contains('darkmode')){
+    if (body.classList.contains('darkmode')) {
         icon.classList.remove('fa-sun');
         icon.classList.add('fa-moon');
     } else {
@@ -167,8 +214,7 @@ button.addEventListener('click', () => {
         icon.classList.add('fa-sun');
     }
 
-    setTimeout( () => {
+    setTimeout(() => {
         icon.classList.remove('animated');
-    }, 500)
-
-    })
+    }, 500);
+});
