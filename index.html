@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taskify - Task Manager</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
+</head>
+<body>
+    <div class="main">
+        <button class="themeBtn">[logo]</button>
+        <div class="header-wrap">
+            <h1>Taskify</h1>
+            <p>A Simple Task Manager</p>
+        </div>
+
+        <div class="addTask-wrap">
+            <form id="taskForm">
+                <input type="text" class="new-task" id="newTask" placeholder="Type here..." required>
+                <button type="submit" class="addTaskBtn">+</button>
+            </form>
+        </div>
+        
+        <div>Total Tasks: <span id="totalTasks">0</span></div>
+        <div>Completed Tasks: <span id="completedTasks">0</span></div>
+        
+        <ul class="task-list" id="taskList"></ul>
+
+        <button id="deleteSelected">[bin]</button>
+    </div>
+</body>
+</html>
