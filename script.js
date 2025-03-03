@@ -16,32 +16,34 @@ document.addEventListener("DOMContentLoaded", function() {
             window.alert("Task already exists!");
             return;
         }
-
+    
         const li = document.createElement("li");
         li.classList.add("task-item");
-        
+    
+        // Checkbox to mark as completed
         const checkBox = document.createElement("input");
         checkBox.type = "checkbox";
         checkBox.addEventListener("change", () => {
-            li.classList.toggle("completed", checkBox.checked);
+            li.classList.toggle("completed", checkBox.checked);  // Toggle completed class
             updateTaskApp();
         });
-
+    
         const span = document.createElement("span");
         span.classList.add("task-text");
         span.textContent = taskInput;
         span.addEventListener("dblclick", () => editTaskText(li, span));
-        
+    
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "X";
         deleteBtn.addEventListener("click", () => removeTask(li));
-
+    
         li.append(checkBox, span, deleteBtn);
         taskList.appendChild(li);
-
+    
         saveTasks();
         updateTaskApp();
     }
+    
     //need pa ni palitan/analyze since dai pa na-encounter dati
     function isDuplicate(taskInput){
         return Array.from(document.querySelectorAll(".task-text")).some(task => task.textContent.toLowerCase() === taskInput.toLowerCase());
