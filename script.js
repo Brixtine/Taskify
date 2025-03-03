@@ -4,47 +4,80 @@ document.addEventListener("DOMContentLoaded", function() {
     const taskList = document.getElementById("taskList");
     const totalTasks = document.getElementById("totalTasks");
     const completedTasks = document.getElementById("completedTasks");
+    const deletedTasks = document.getElementById("deletedTasks");
+    const editedTasks = document.getElementById("editedTasks");
     const deleteBtn = document.getElementById("deleteSelected");
+    const sortBtn = document.getElementById("sort");
+    const originalOrder = document.getElementById("resetSort");
     let editTask = null;
+    let originalTaskOrder = [];
+    let sortDirection = "asc";
 
-    function addTask(taskInput){
-        if(!taskInput.trim()){
+    sortBtn.textContent = "Sort (A-Z)";
+
+    sortBtn.addEventListener("click", () => {
+        const tasks = Array.from(document.querySelectorAll(".task-item"));
+        
+        tasks.sort((a, b) => {
+            const textA = a.querySelector(".task-text").textContent.toLowerCase();
+            const textB = b.querySelector(".task-text").textContent.toLowerCase();
+            return sortDirection === "asc" ? 
+                textA.localeCompare(textB) : 
+                textB.localeCompare(textA);
+        });
+        
+        sortDirection = sortDirection === "asc" ? "desc" : "asc";
+        sortBtn.textContent = sortDirection === "asc" ? "Sort (A-Z)" : "Sort (Z-A)";
+        
+        taskList.innerHTML = "";
+        tasks.forEach(task => taskList.appendChild(task));
+        
+        saveTasks();
+    });
+
+    function addTask(taskInput, isCompleted = false) {
+        if (!taskInput.trim()) {
             window.alert("Task cannot be empty!");
             return;
         }
-        if(isDuplicate(taskInput)){
+        if (isDuplicate(taskInput)) {
             window.alert("Task already exists!");
             return;
         }
     
         const li = document.createElement("li");
         li.classList.add("task-item");
-        li.draggable = true; // joseph added
+        li.draggable = true;
     
-        // Checkbox to mark as completed
         const checkBox = document.createElement("input");
         checkBox.type = "checkbox";
-        checkBox.addEventListener("change", () => {
-            li.classList.toggle("completed", checkBox.checked);  // Toggle completed class
+        checkBox.classList.add("multi-select");
+    
+        const completeBtn = document.createElement("button");
+        completeBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+        completeBtn.classList.add("complete-btn");
+        completeBtn.addEventListener("click", () => {
+            li.classList.toggle("completed");
+            saveTasks();
             updateTaskApp();
         });
     
         const span = document.createElement("span");
         span.classList.add("task-text");
         span.textContent = taskInput;
-        //span.addEventListener("dblclick", () => editTaskText(li, span));
-        taskList.addEventListener("dblclick", function (e) {
-            if (e.target.classList.contains("task-text")) {
-                editTaskText(e.target.closest(".task-item"), e.target);
-            }
-        });
-        
     
+        span.addEventListener("dblclick", () => editTaskText(li, span));
+
         const deleteBtn = document.createElement("button");
+        deleteBtn.classList.add("delete-btn");
         deleteBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
         deleteBtn.addEventListener("click", () => removeTask(li));
     
-        li.append(checkBox, span, deleteBtn);
+        if (isCompleted) { 
+            li.classList.add("completed");
+        }
+    
+        li.append(checkBox, span, completeBtn, deleteBtn);
         taskList.appendChild(li);
     
         saveTasks();
@@ -52,15 +85,18 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     
     function isDuplicate(taskInput){
-        return Array.from(document.querySelectorAll(".task-text")).some(task => task.textContent.toLowerCase() === taskInput.toLowerCase());
+        return Array.from(document.querySelectorAll(".task-text")).some(task => 
+            task.textContent.toLowerCase() === taskInput.toLowerCase());
     }
 
     function updateTaskApp(){
         const tasks = document.querySelectorAll(".task-item");
         totalTasks.textContent = tasks.length;
         completedTasks.textContent = document.querySelectorAll(".task-item.completed").length;
+        deletedTasks.textContent = localStorage.getItem("deletedCount") || 0;
+        editedTasks.textContent = localStorage.getItem("editedCount") || 0;
     }
-
+    
     function editTaskText(li, span){
         if(editTask) return;
         editTask = span;
@@ -76,7 +112,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function saveEdit(li, span, input){
-        
         const newText = input.value.trim();
         if(!newText){
             window.alert("Task cannot be empty!");
@@ -84,15 +119,22 @@ document.addEventListener("DOMContentLoaded", function() {
             editTask = null;
             return;
         }
-        if (isDuplicate(newText)) { 
-            //window.alert("Task already exists!");
+        if (newText !== span.textContent && isDuplicate(newText)) { 
+            window.alert("Task already exists!");
+            li.replaceChild(span, input); 
+            editTask = null;
             return;
         }
 
         span.textContent = newText;
         li.replaceChild(span, input);
         editTask = null;
+
+        let editedCount = parseInt(localStorage.getItem("editedCount"))|| 0;
+        localStorage.setItem("editedCount", editedCount + 1);
+
         saveTasks();
+        updateTaskApp();
     }
     
     function removeTask(task){
@@ -100,6 +142,10 @@ document.addEventListener("DOMContentLoaded", function() {
         const taskText = task.querySelector(".task-text").textContent;
         if(confirm(`Are you sure you want to delete "${taskText}"?`)){
             task.remove();
+
+            let deletedCount = parseInt(localStorage.getItem("deletedCount")) || 0;
+            localStorage.setItem("deletedCount", deletedCount + 1);
+
             saveTasks();
             updateTaskApp();
         }
@@ -110,30 +156,77 @@ document.addEventListener("DOMContentLoaded", function() {
         if(selectedTasks.length === 0) return;
         if(confirm(`Are you sure you want to delete ${selectedTasks.length} selected tasks?`)){
             selectedTasks.forEach(checkBox => checkBox.closest(".task-item").remove());
+
+            let deletedCount = parseInt(localStorage.getItem("deletedCount")) || 0;
+            localStorage.setItem("deletedCount", deletedCount + selectedTasks.length);
+
             saveTasks();
             updateTaskApp();
         }
     });
 
-    function saveTasks(){
+    function saveTasks() {
         const tasks = Array.from(document.querySelectorAll(".task-item")).map(task => ({
             text: task.querySelector(".task-text").textContent,
             completed: task.classList.contains("completed")
         }));
         localStorage.setItem("tasks", JSON.stringify(tasks));
+        
+        if (!document.querySelector(".dragging")) {
+            updateOriginalOrder();
+        }
     }
 
-    function loadSavedTasks(){
-        const tasks = JSON.parse(localStorage.getItem("tasks"))||[];
+    function updateOriginalOrder() {
+        const currentTaskTexts = Array.from(document.querySelectorAll(".task-item"))
+            .map(task => task.querySelector(".task-text").textContent);
+        
+        let storedOrder = JSON.parse(localStorage.getItem("initialOrder")) || [];
+        
+        const newTasks = currentTaskTexts.filter(task => !storedOrder.includes(task));
+        storedOrder = [...storedOrder, ...newTasks]; 
+        
+        storedOrder = storedOrder.filter(task => currentTaskTexts.includes(task));
+        
+        localStorage.setItem("initialOrder", JSON.stringify(storedOrder));
+        originalTaskOrder = [...storedOrder];
+    }
+
+    function loadSavedTasks() {
+        const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        
         tasks.forEach(task => {
-            addTask(task.text);
-            if(task.completed){
-                const taskItem = document.querySelector(".task-item:last-child");
-                taskItem.classList.add("completed");
-                taskItem.querySelector("input").checked = true;
+            addTask(task.text, task.completed);
+        });
+        
+        const initialOrder = tasks.map(task => task.text);
+        localStorage.setItem("initialOrder", JSON.stringify(initialOrder));
+        
+        originalTaskOrder = [...initialOrder];
+    }
+    
+    originalOrder.addEventListener("click", () => {
+        const savedOrder = JSON.parse(localStorage.getItem("initialOrder")) || [];
+        if (savedOrder.length === 0) return;
+        
+        const currentTasks = Array.from(document.querySelectorAll(".task-item"));
+        const taskMap = {};
+        
+        currentTasks.forEach(task => {
+            const text = task.querySelector(".task-text").textContent;
+            taskMap[text] = task;
+        });
+        
+        taskList.innerHTML = "";
+        
+        savedOrder.forEach(taskText => {
+            if (taskMap[taskText]) {
+                taskList.appendChild(taskMap[taskText]);
             }
         });
-    }
+        
+        updateTaskApp();
+    });
 
     taskList.addEventListener("dragstart", (event) => {
         event.target.classList.add("dragging");
@@ -143,7 +236,7 @@ document.addEventListener("DOMContentLoaded", function() {
         event.target.classList.remove("dragging");
         saveTasks(); 
     });
-
+    
     taskList.addEventListener("dragover", (event) => {
         event.preventDefault();
         const draggingItem = document.querySelector(".dragging");
@@ -168,11 +261,12 @@ document.addEventListener("DOMContentLoaded", function() {
         }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
 
-    taskForm.addEventListener("submit", (e) =>{
+    taskForm.addEventListener("submit", (e) => {
         e.preventDefault();
         addTask(newTaskInput.value);
         newTaskInput.value = "";
     });
+    
     loadSavedTasks();
     updateTaskApp();
 });
@@ -200,7 +294,6 @@ function load(){
 load();
 
 button.addEventListener('click', () => {
-
     body.classList.toggle('darkmode');
     icon.classList.add('animated');
 

@@ -1,12 +1,17 @@
 body{
     font-family: Arial, Helvetica, sans-serif;
 }
+main{
+    width: 100%;
+    height: 90vh;
+}
 ul li{
     list-style: none;
     padding: 5px;
     border: 1px solid;
 }
 .header-wrap{
+    margin-top: 20px;
     text-align: center;
     margin-bottom: 30px;
 }
@@ -23,18 +28,27 @@ ul li{
     border-radius: 5px;
     font-size: 16px;
 }
+i{
+    font-size: 13px;
+    padding: 0px 5px;
+}
 .new-task{
-    width: 500px;
+    width: 300px;
     height: 30px;
 }
 #addTaskBtn{
     background-color: rgb(53, 133, 199);
     color: white;
     border: none;
-    padding: 5px;
+    padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
 }
+
+#addTaskBtn:hover {
+    background-color: rgb(9, 89, 155) !important; 
+}
+
 .task-input:focus{
     outline: none;
     border-color: var(--color);
@@ -53,14 +67,21 @@ ul li{
     font-size: 14px;
     transition: all 0.3s ease;
 }
-.btn-deleted{
-    background-color: red;
+.btn-deleted:hover{
+    background-color: red !important;
     color: white;
+    transition: all 0.3s ease;
+}
+#sort:hover, #resetSort:hover{
+    background-color: rgb(53, 133, 199);
+    color: white;
+    transition: all 0.3s ease;
 }
 
 .status{
     display: flex;
-    gap: 50px;
+    gap: 20px;
+    text-align: center;
     justify-content: center;
     margin-top: 20px;
     padding-top: 20px;
@@ -104,7 +125,7 @@ body {
 
     position: fixed;
     left: 20px;
-    top: 20px;
+    top: 15px;
     cursor: pointer;
     align-items: center;
     display: flex;
@@ -133,6 +154,27 @@ body {
     font-size: 14px;
 }
 
+.complete-btn, .delete-btn{
+    background-color: whitesmoke;
+    border: none;
+    padding: 3px;
+    margin-left: 5px;
+}
+
+.complete-btn:hover {
+    background-color: lightgreen !important;
+    color: white !important;
+}
+
+.delete-btn:hover {
+    background-color: rgb(241, 57, 57) !important;
+    color: white !important;
+}
+
+.btn, #addTaskBtn, .complete-btn, .delete-btn {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 .completed .task-text {
     text-decoration: line-through;   
     color: gray;                     
@@ -141,14 +183,19 @@ body {
 .completed {
     background-color: #d3ffd3;       
 }
-
+.task-list { 
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+}
 .task-item {
     padding: 10px;
     border: 1px solid #ddd;
-    margin: 5px 0;
+    margin: 15px 0 -5px;
     display: flex;
     align-items: center;
     cursor: grab;
+    width: 400px;
 }
 
 .task-item .task-text {
@@ -172,6 +219,21 @@ body.darkmode{
                 inset 0 -4px 4px rgba(0, 0, 0, .3);
 }
 
+.darkmode .task-item, .darkmode .complete-btn, .darkmode .delete-btn{
+    background-color: #2b2b2b;
+    color: #f0f0f0;
+}
+
+.darkmode .complete-btn:hover {
+    background-color: lightgreen !important;
+    color: white !important;
+}
+
+.darkmode .delete-btn:hover {
+    background-color: rgb(241, 57, 57) !important;
+    color: white !important;
+}
+
 .darkmode .button__indicator{
     transform: translateX(1em);
     background-color: var(--dark-color);
@@ -191,10 +253,8 @@ body.darkmode{
         transform: rotate(360deg);
     }
 }
-/* joseph added: Drag-and-drop styles */
+
 .task-item.dragging {
-    opacity: 0.5;
-    background-color: lightgray;
+    opacity: 0.6;
+    background-color: var(--color, lightgray);
 }
-
-
