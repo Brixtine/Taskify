@@ -16,18 +16,29 @@
         </div>
 
         <div class="addTask-wrap">
-            <form id="taskForm">
+            <form class="task-form" id="taskForm">
                 <input type="text" class="new-task" id="newTask" placeholder="Type here..." required>
-                <button type="submit" class="addTaskBtn">+</button>
+                <button type="submit" class="addTaskBtn">Add Task</button>
             </form>
+
+        <div class="controls">
+            <button class="btn" id="sortAsc">Sort in Ascending Order</button>
+            <button class="btn" id="sortDesc">Sort in Descending Order</button>
+            <button class="btn" id="resetSort">Reset</button>
+            <button class="btn btn-deleted" id="deleteSelected">Delete Selected</button>
+        
+        </div>
         </div>
         
-        <div>Total Tasks: <span id="totalTasks">0</span></div>
-        <div>Completed Tasks: <span id="completedTasks">0</span></div>
+    <div class="status">
+            <div>Total Tasks: <span id="totalTasks">0</span></div>
+            <div>Completed Tasks: <span id="completedTasks">0</span></div>
         
-        <ul class="task-list" id="taskList"></ul>
-
+            <ul class="task-list" id="taskList"></ul>
+        </div>
         <button id="deleteSelected">[bin]</button>
     </div>
+
+    <script src="script.js"></script>
 </body>
 </html>

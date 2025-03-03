@@ -6,3 +6,60 @@ ul li{
     padding: 5px;
     border: 1px solid;
 }
+.header-wrap{
+    text-align: center;
+    margin-bottom: 30px;
+}
+.task-form{
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+.task-input{
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+.new-task{
+    width: 500px;
+    height: 30px;
+}
+.addTaskBtn{
+    background-color: rgb(53, 133, 199);
+    color: white;
+    border: none;
+}
+.task-input:focus{
+    outline: none;
+    border-color: var;
+}
+.controls{
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+.btn{
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+.btn-deleted{
+    background-color: red;
+    color: white;
+}
+
+.status{
+    display: flex;
+    gap: 50px;
+    justify-content: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
