@@ -195,12 +195,21 @@ body {
     display: flex;
     align-items: center;
     cursor: grab;
-    width: 400px;
+    width: 100%;
+    max-width: 90%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    overflow: hidden;
 }
 
 .task-item .task-text {
     flex: 1;
     font-size: 16px;
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    max-width: 100%; 
 }
 
 input[type="checkbox"] {

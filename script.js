@@ -153,7 +153,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
     deleteBtn.addEventListener("click", () => {
         const selectedTasks = document.querySelectorAll(".task-item input:checked");
-        if(selectedTasks.length === 0) return;
+        if (selectedTasks.length === 0) {
+            alert("No tasks selected for deletion.");
+            return;
+        }
         if(confirm(`Are you sure you want to delete ${selectedTasks.length} selected tasks?`)){
             selectedTasks.forEach(checkBox => checkBox.closest(".task-item").remove());
 
