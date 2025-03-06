@@ -197,19 +197,27 @@ body {
     cursor: grab;
     width: 100%;
     max-width: 90%;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    overflow: hidden;
+    overflow: hidden; 
+    word-wrap: break-word; 
+    overflow-wrap: break-word; 
+    transition: background-color 0.3s ease;
+
+}
+
+.task-item:hover{
+    background-color:rgb(191, 176, 221);
+}
+
+.darkmode .task-item:hover{
+    background-color:rgb(133, 94, 211);
 }
 
 .task-item .task-text {
-    flex: 1;
-    font-size: 16px;
-    white-space: nowrap; 
-    overflow: hidden; 
-    text-overflow: ellipsis; 
+    flex-grow: 1; 
     max-width: 100%; 
+    white-space: normal; 
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 input[type="checkbox"] {

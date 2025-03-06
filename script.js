@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
         tasks.forEach(task => taskList.appendChild(task));
         
         saveTasks();
+        console.log("Tasks sorted in " + sortDirection + " order.");
     });
 
     function addTask(taskInput, isCompleted = false) {
@@ -82,6 +83,7 @@ document.addEventListener("DOMContentLoaded", function() {
     
         saveTasks();
         updateTaskApp();
+        console.log("Task added to list successfully!");
     }
     
     function isDuplicate(taskInput){
@@ -135,6 +137,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         saveTasks();
         updateTaskApp();
+        console.log("Task changes saved successfully!");
     }
     
     function removeTask(task){
@@ -148,25 +151,32 @@ document.addEventListener("DOMContentLoaded", function() {
 
             saveTasks();
             updateTaskApp();
+            console.log("Task deleted from list successfully!");
         }
     }
-
-    deleteBtn.addEventListener("click", () => {
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Delete") {
+            deleteSelectedTasks();
+        }
+    });
+    
+    function deleteSelectedTasks() {
         const selectedTasks = document.querySelectorAll(".task-item input:checked");
         if (selectedTasks.length === 0) {
             alert("No tasks selected for deletion.");
             return;
         }
-        if(confirm(`Are you sure you want to delete ${selectedTasks.length} selected tasks?`)){
+        if (confirm(`Are you sure you want to delete ${selectedTasks.length} selected tasks?`)) {
             selectedTasks.forEach(checkBox => checkBox.closest(".task-item").remove());
-
+    
             let deletedCount = parseInt(localStorage.getItem("deletedCount")) || 0;
             localStorage.setItem("deletedCount", deletedCount + selectedTasks.length);
-
+    
             saveTasks();
             updateTaskApp();
+            console.log(`${selectedTasks.length} task(s) deleted from list successfully!`);
         }
-    });
+    }
 
     function saveTasks() {
         const tasks = Array.from(document.querySelectorAll(".task-item")).map(task => ({
@@ -229,6 +239,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
         
         updateTaskApp();
+        console.log("Restoring original task order.");
     });
 
     taskList.addEventListener("dragstart", (event) => {
