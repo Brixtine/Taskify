@@ -159,6 +159,8 @@ document.addEventListener("DOMContentLoaded", function() {
             deleteSelectedTasks();
         }
     });
+
+    deleteBtn.addEventListener("click", () => deleteSelectedTasks());
     
     function deleteSelectedTasks() {
         const selectedTasks = document.querySelectorAll(".task-item input:checked");
